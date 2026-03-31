@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ENGRAM â€” The Agent Memory Engine</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav class="nav" id="nav">
+    <div class="nav-inner">
+      <a href="#" class="nav-logo">
+        <span class="nav-logo-icon">â—ˆ</span>
+        <span class="nav-logo-text">ENGRAM</span>
+        <span class="nav-logo-by">by MateoKnox</span>
+      </a>
+      <div class="nav-links">
+        <a href="#layers">Layers</a>
+        <a href="#compare">Compare</a>
+        <a href="#philosophy">Philosophy</a>
+        <a href="https://github.com/MateoKnox/engram" target="_blank" class="nav-github">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+          GitHub
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero" id="hero">
+    <canvas id="hero-canvas"></canvas>
+    <div class="hero-content">
+      <div class="hero-badge animate-fade-up">
+        <span class="badge-dot"></span>
+        v0.1.0 â€” open source
+      </div>
+      <h1 class="hero-title animate-fade-up delay-1">
+        <span class="hero-title-ENGRAM">ENGRAM</span>
+        <br />
+        <span class="hero-title-sub">The Agent Memory Engine</span>
+      </h1>
+      <p class="hero-desc animate-fade-up delay-2">
+        A TOML-based configuration format and Node.js library for structured AI agent memory.<br />
+        Six layers. Explicit decay. Zero amnesia. Model agnostic.
+      </p>
+      <div class="hero-actions animate-fade-up delay-3">
+        <a href="https://github.com/MateoKnox/engram" target="_blank" class="btn btn-primary">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+          View on GitHub
+        </a>
+        <a href="#layers" class="btn btn-ENGRAM">Explore the Layers &#8594;</a>
+      </div>
+      <div class="hero-terminal animate-fade-up delay-4">
+        <div class="terminal-header">
+          <div class="terminal-dots">
+            <span></span><span></span><span></span>
+          </div>
+          <span class="terminal-title">engram.toml</span>
+        </div>
+        <div class="terminal-body">
+          <pre class="terminal-code" id="hero-code"></pre>
+        </div>
+      </div>
+    </div>
+    <div class="hero-scroll-hint">
+      <span>scroll</span>
+      <div class="scroll-line"></div>
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <section class="stats-bar">
+    <div class="stats-inner">
+      <div class="stat-item reveal">
+        <span class="stat-num">6</span>
+        <span class="stat-label">Memory Layers</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-item reveal">
+        <span class="stat-num">&#8734;</span>
+        <span class="stat-label">Model Agnostic</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-item reveal">
+        <span class="stat-num">0</span>
+        <span class="stat-label">Amnesia Events</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-item reveal">
+        <span class="stat-num">TOML</span>
+        <span class="stat-label">Human-Readable</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- WORKS WITH -->
+  <section class="works-with" id="works-with">
+    <div class="container">
+      <p class="section-eyebrow reveal" style="text-align:center">compatible with</p>
+      <h2 class="section-title reveal" style="text-align:center">Works with any model</h2>
+      <div class="logos-grid reveal">
+        <div class="logo-item">
+          <span class="logo-text">GPT-4o</span>
+        </div>
+        <div class="logo-item">
+          <span class="logo-text">Claude 3.5</span>
+        </div>
+        <div class="logo-item">
+          <span class="logo-text">Gemini</span>
+        </div>
+        <div class="logo-item">
+          <span class="logo-text">Mistral</span>
+        </div>
+        <div class="logo-item">
+          <span class="logo-text">LLaMA 3</span>
+        </div>
+        <div class="logo-item">
+          <span class="logo-text">Qwen</span>
+        </div>
+        <div class="logo-item">
+          <span class="logo-text">DeepSeek</span>
+        </div>
+        <div class="logo-item">
+          <span class="logo-text">Phi-3</span>
+        </div>
+      </div>
+      <p class="section-eyebrow reveal" style="margin-top:4rem;text-align:center">built for</p>
+      <div class="frameworks-grid reveal">
+        <div class="framework-item">LangChain</div>
+        <div class="framework-item">AutoGen</div>
+        <div class="framework-item">CrewAI</div>
+        <div class="framework-item">smolagents</div>
+        <div class="framework-item">LlamaIndex</div>
+        <div class="framework-item">DSPy</div>
+        <div class="framework-item">Semantic Kernel</div>
+        <div class="framework-item">Custom Agents</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- LAYERS -->
+  <section class="layers" id="layers">
+    <div class="container">
+      <div class="section-header">
+        <p class="section-eyebrow reveal">architecture</p>
+        <h2 class="section-title reveal">Six layers of structured memory</h2>
+        <p class="section-desc reveal">Each layer serves a distinct cognitive role. Memories flow through layers as they age, compress, and consolidate.</p>
+      </div>
+      <div class="layers-resolution reveal">
+        <span class="resolution-label">resolution priority</span>
+        <div class="resolution-flow">
+          <span class="res-item core">CORE</span>
+          <span class="res-arrow">&#8250;</span>
+          <span class="res-item residue">RESIDUE</span>
+          <span class="res-arrow">&#8250;</span>
+          <span class="res-item skill">SKILL</span>
+          <span class="res-arrow">&#8250;</span>
+          <span class="res-item graph">GRAPH</span>
+          <span class="res-arrow">&#8250;</span>
+          <span class="res-item episode">EPISODE</span>
+          <span class="res-arrow">&#8250;</span>
+          <span class="res-item buffer">BUFFER</span>
+        </div>
+      </div>
+      <div class="layers-grid">
+
+        <div class="layer-card reveal" data-layer="buffer">
+          <div class="layer-card-header">
+            <span class="layer-num">01</span>
+            <span class="layer-tag buffer">BUFFER</span>
+          </div>
+          <h3 class="layer-name">Working Memory &amp; Active Context</h3>
+          <p class="layer-desc">What the agent is thinking about right now. Short-lived, high-throughput context that drives the current inference window. Expires in seconds to minutes and evicts old entries via LRU when capacity is reached.</p>
+          <div class="layer-code">
+            <pre><code><span class="t-bracket">[memory.buffer]</span>
+<span class="t-key">ttl</span>      = <span class="t-str">"5m"</span>
+<span class="t-key">capacity</span> = <span class="t-num">1000</span>
+<span class="t-key">strategy</span> = <span class="t-str">"lru"</span>
+<span class="t-key">priority</span> = <span class="t-num">6</span></code></pre>
+          </div>
+          <div class="layer-footer">
+            <span class="layer-trait">volatile</span>
+            <span class="layer-trait">TTL: secondsâ€“minutes</span>
+            <span class="layer-trait">auto-evict</span>
+          </div>
+        </div>
+
+        <div class="layer-card reveal" data-layer="episode">
+          <div class="layer-card-header">
+            <span class="layer-num">02</span>
+            <span class="layer-tag episode">EPISODE</span>
+          </div>
+          <h3 class="layer-name">Event Logs with Timestamps</h3>
+          <p class="layer-desc">A chronological record of what happened and when. Every entry carries a timestamp and decays according to a configurable half-life â€” older events grow dimmer without being erased outright.</p>
+          <div class="layer-code">
+            <pre><code><span class="t-bracket">[memory.episode]</span>
+<span class="t-key">half_life</span>   = <span class="t-str">"2h"</span>
+<span class="t-key">decay</span>       = <span class="t-str">"exponential"</span>
+<span class="t-key">max_entries</span> = <span class="t-num">500</span>
+<span class="t-key">priority</span>    = <span class="t-num">5</span></code></pre>
+          </div>
+          <div class="layer-footer">
+            <span class="layer-trait">timestamped</span>
+            <span class="layer-trait">configurable half-life</span>
+            <span class="layer-trait">decaying</span>
+          </div>
+        </div>
+
+        <div class="layer-card reveal" data-layer="graph">
+          <div class="layer-card-header">
+            <span class="layer-num">03</span>
+            <span class="layer-tag graph">GRAPH</span>
+          </div>
+          <h3 class="layer-name">Knowledge Graph / Semantic Facts</h3>
+          <p class="layer-desc">Structured facts and relational knowledge stored as a persistent, updatable graph. What the agent knows about the world â€” independent of when it learned it. Nodes merge and evolve over time.</p>
+          <div class="layer-code">
+            <pre><code><span class="t-bracket">[memory.graph]</span>
+<span class="t-key">persistent</span> = <span class="t-bool">true</span>
+<span class="t-key">storage</span>    = <span class="t-str">"json"</span>
+<span class="t-key">strategy</span>   = <span class="t-str">"merge"</span>
+<span class="t-key">priority</span>   = <span class="t-num">4</span></code></pre>
+          </div>
+          <div class="layer-footer">
+            <span class="layer-trait">persistent</span>
+            <span class="layer-trait">updatable</span>
+            <span class="layer-trait">graph-based</span>
+          </div>
+        </div>
+
+        <div class="layer-card reveal" data-layer="skill">
+          <div class="layer-card-header">
+            <span class="layer-num">04</span>
+            <span class="layer-tag skill">SKILL</span>
+          </div>
+          <h3 class="layer-name">Learned Procedures &amp; Behaviors</h3>
+          <p class="layer-desc">Encoded workflows, task patterns, and learned behaviors. The agent's procedural memory â€” how to accomplish goals, not just what goals exist. Reinforced on success, versioned across updates.</p>
+          <div class="layer-code">
+            <pre><code><span class="t-bracket">[memory.skill]</span>
+<span class="t-key">persistent</span>    = <span class="t-bool">true</span>
+<span class="t-key">versioned</span>     = <span class="t-bool">true</span>
+<span class="t-key">reinforce_on</span>  = <span class="t-str">"success"</span>
+<span class="t-key">priority</span>      = <span class="t-num">3</span></code></pre>
+          </div>
+          <div class="layer-footer">
+            <span class="layer-trait">persistent</span>
+            <span class="layer-trait">versioned</span>
+            <span class="layer-trait">executable</span>
+          </div>
+        </div>
+
+        <div class="layer-card reveal" data-layer="residue">
+          <div class="layer-card-header">
+            <span class="layer-num">05</span>
+            <span class="layer-tag residue">RESIDUE</span>
+          </div>
+          <h3 class="layer-name">Compressed Traces of Decayed Memories</h3>
+          <p class="layer-desc">Lossy but searchable distillations of memories that have aged out of EPISODE. Not deleted â€” compressed. The residue of experience that shapes behavior without consuming context budget.</p>
+          <div class="layer-code">
+            <pre><code><span class="t-bracket">[memory.residue]</span>
+<span class="t-key">compression</span>   = <span class="t-str">"semantic"</span>
+<span class="t-key">ratio</span>         = <span class="t-num">0.05</span>
+<span class="t-key">source_layers</span> = <span class="t-arr">["episode"]</span>
+<span class="t-key">priority</span>      = <span class="t-num">2</span></code></pre>
+          </div>
+          <div class="layer-footer">
+            <span class="layer-trait">compressed</span>
+            <span class="layer-trait">searchable</span>
+            <span class="layer-trait">lossy</span>
+          </div>
+        </div>
+
+        <div class="layer-card reveal" data-layer="core">
+          <div class="layer-card-header">
+            <span class="layer-num">06</span>
+            <span class="layer-tag core">CORE</span>
+          </div>
+          <h3 class="layer-name">Immutable Foundational Memories</h3>
+          <p class="layer-desc">Write-once memories that define the agent's fundamental identity, values, and constraints. CORE never decays, never overwrites, and always resolves first. The bedrock that holds everything else steady.</p>
+          <div class="layer-code">
+            <pre><code><span class="t-bracket">[memory.core]</span>
+<span class="t-key">immutable</span> = <span class="t-bool">true</span>
+<span class="t-key">ttl</span>       = <span class="t-str">"forever"</span>
+<span class="t-key">priority</span>  = <span class="t-num">1</span></code></pre>
+          </div>
+          <div class="layer-footer">
+            <span class="layer-trait">immutable</span>
+            <span class="layer-trait">never decays</span>
+            <span class="layer-trait">highest-priority</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- COMPARISON -->
+  <section class="compare" id="compare">
+    <div class="container">
+      <div class="section-header">
+        <p class="section-eyebrow reveal">comparison</p>
+        <h2 class="section-title reveal">RAG vs ENGRAM</h2>
+        <p class="section-desc reveal">Retrieval is not memory. ENGRAM gives agents structured, layered, decaying memory â€” not just a vector dump.</p>
+      </div>
+      <div class="compare-grid">
+        <div class="compare-col rag reveal">
+          <div class="compare-col-header">
+            <span class="compare-label bad">RAG / Vector Store</span>
+          </div>
+          <ul class="compare-list">
+            <li class="compare-item bad">
+              <span class="compare-icon">&#10007;</span>
+              <div>
+                <strong>Flat embedding dump</strong>
+                <p>All memories treated as equal vectors â€” no hierarchy, no priority, no structure</p>
+              </div>
+            </li>
+            <li class="compare-item bad">
+              <span class="compare-icon">&#10007;</span>
+              <div>
+                <strong>No time awareness</strong>
+                <p>Embeddings carry no intrinsic timestamp â€” recency is bolted on as metadata at best</p>
+              </div>
+            </li>
+            <li class="compare-item bad">
+              <span class="compare-icon">&#10007;</span>
+              <div>
+                <strong>No decay</strong>
+                <p>Old context survives indefinitely or vanishes entirely â€” no graceful aging</p>
+              </div>
+            </li>
+            <li class="compare-item bad">
+              <span class="compare-icon">&#10007;</span>
+              <div>
+                <strong>Retrieved by similarity only</strong>
+                <p>Locked to cosine distance â€” semantically distant but critically important memories get lost</p>
+              </div>
+            </li>
+            <li class="compare-item bad">
+              <span class="compare-icon">&#10007;</span>
+              <div>
+                <strong>Stateless between calls</strong>
+                <p>Every inference starts fresh â€” no continuity, no accumulated understanding</p>
+              </div>
+            </li>
+            <li class="compare-item bad">
+              <span class="compare-icon">&#10007;</span>
+              <div>
+                <strong>No priority resolution</strong>
+                <p>No way to declare that some memories must always win conflicts over others</p>
+              </div>
+            </li>
+            <li class="compare-item bad">
+              <span class="compare-icon">&#10007;</span>
+              <div>
+                <strong>Loses context as docs grow</strong>
+                <p>Retrieval quality degrades as the vector store grows â€” signal drowns in noise</p>
+              </div>
+            </li>
+            <li class="compare-item bad">
+              <span class="compare-icon">&#10007;</span>
+              <div>
+                <strong>No structure</strong>
+                <p>Opaque internals â€” memory state is unreadable without embedding model access</p>
+              </div>
+            </li>
+          </ul>
+        </div>
+        <div class="compare-divider">
+          <div class="compare-vs">VS</div>
+        </div>
+        <div class="compare-col engram reveal">
+          <div class="compare-col-header">
+            <span class="compare-label good">ENGRAM</span>
+          </div>
+          <ul class="compare-list">
+            <li class="compare-item good">
+              <span class="compare-icon">&#10003;</span>
+              <div>
+                <strong>6 structured layers</strong>
+                <p>BUFFER, EPISODE, GRAPH, SKILL, RESIDUE, CORE â€” each with a defined cognitive role</p>
+              </div>
+            </li>
+            <li class="compare-item good">
+              <span class="compare-icon">&#10003;</span>
+              <div>
+                <strong>Timestamps on every memory</strong>
+                <p>EPISODE layer carries full timestamps and half-life decay from the moment of storage</p>
+              </div>
+            </li>
+            <li class="compare-item good">
+              <span class="compare-icon">&#10003;</span>
+              <div>
+                <strong>Configurable decay per layer</strong>
+                <p>TTL, half-life, and decay strategy are declared per layer in plain TOML</p>
+              </div>
+            </li>
+            <li class="compare-item good">
+              <span class="compare-icon">&#10003;</span>
+              <div>
+                <strong>Priority resolution: CORE&#8594;BUFFER</strong>
+                <p>Explicit conflict resolution â€” CORE always wins, BUFFER is lowest priority</p>
+              </div>
+            </li>
+            <li class="compare-item good">
+              <span class="compare-icon">&#10003;</span>
+              <div>
+                <strong>State persists and evolves</strong>
+                <p>Memory accumulates across sessions â€” agents build genuine continuity over time</p>
+              </div>
+            </li>
+            <li class="compare-item good">
+              <span class="compare-icon">&#10003;</span>
+              <div>
+                <strong>Consolidation pipeline</strong>
+                <p>BUFFER &#8594; EPISODE &#8594; GRAPH consolidation moves memories up the stack automatically</p>
+              </div>
+            </li>
+            <li class="compare-item good">
+              <span class="compare-icon">&#10003;</span>
+              <div>
+                <strong>Residue preserves compressed traces</strong>
+                <p>Decayed EPISODE entries compress into RESIDUE â€” searchable, lossy, never truly lost</p>
+              </div>
+            </li>
+            <li class="compare-item good">
+              <span class="compare-icon">&#10003;</span>
+              <div>
+                <strong>TOML-declared schema</strong>
+                <p>Full memory architecture is a human-readable file you can read, commit, and review in a PR</p>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PHILOSOPHY -->
+  <section class="philosophy" id="philosophy">
+    <div class="container">
+      <div class="section-header">
+        <p class="section-eyebrow reveal">design principles</p>
+        <h2 class="section-title reveal">Built on four principles</h2>
+        <p class="section-desc reveal">ENGRAM is opinionated by design. These four principles drive every decision in the library and the format.</p>
+      </div>
+      <div class="philosophy-grid">
+        <div class="philosophy-card reveal">
+          <div class="phil-num">01</div>
+          <div class="phil-content">
+            <div class="phil-mantra">
+              <span class="phil-left">structure</span>
+              <span class="phil-op">&gt;</span>
+              <span class="phil-right">embeddings</span>
+            </div>
+            <p class="phil-desc">A slot-based memory architecture beats a bag of vectors. Know what each memory means before you store it. ENGRAM gives every memory a declared type, layer, and role â€” nothing floats anonymously in latent space.</p>
+          </div>
+        </div>
+        <div class="philosophy-card reveal">
+          <div class="phil-num">02</div>
+          <div class="phil-content">
+            <div class="phil-mantra">
+              <span class="phil-left">decay</span>
+              <span class="phil-op">&gt;</span>
+              <span class="phil-right">deletion</span>
+            </div>
+            <p class="phil-desc">Memories don't vanish â€” they compress into RESIDUE and consolidate into GRAPH. Nothing is truly lost, just transformed. Forgetting should be intentional, gradual, and reversibly auditable.</p>
+          </div>
+        </div>
+        <div class="philosophy-card reveal">
+          <div class="phil-num">03</div>
+          <div class="phil-content">
+            <div class="phil-mantra">
+              <span class="phil-left">layers</span>
+              <span class="phil-op">&gt;</span>
+              <span class="phil-right">dumps</span>
+            </div>
+            <p class="phil-desc">Not all memories are equal. CORE never changes. BUFFER expires in minutes. The architecture reflects cognitive reality â€” cramming everything into one context window is not a memory strategy.</p>
+          </div>
+        </div>
+        <div class="philosophy-card reveal">
+          <div class="phil-num">04</div>
+          <div class="phil-content">
+            <div class="phil-mantra">
+              <span class="phil-left">toml</span>
+              <span class="phil-op">&gt;</span>
+              <span class="phil-right">vibes</span>
+            </div>
+            <p class="phil-desc">Your agent's memory should be readable by humans. Declare it in a file, commit it to git, review it in a PR. If you can't explain your memory architecture in a text editor, you don't control it.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CODE EXAMPLE -->
+  <section class="code-example" id="code">
+    <div class="container">
+      <div class="section-header">
+        <p class="section-eyebrow reveal">usage</p>
+        <h2 class="section-title reveal">Simple API, powerful memory</h2>
+        <p class="section-desc reveal">The ENGRAM library gives you a clean TypeScript/JavaScript API over the full layer stack. One config file. Six layers. Zero boilerplate.</p>
+      </div>
+
+      <div class="code-split reveal">
+        <!-- TOML Config -->
+        <div class="code-block">
+          <div class="config-header">
+            <div class="terminal-dots">
+              <span></span><span></span><span></span>
+            </div>
+            <span class="config-filename">engram.toml</span>
+            <button class="copy-btn" id="copy-btn">Copy</button>
+          </div>
+          <div class="config-body">
+            <pre class="config-code"><code><span class="t-comment"># engram.toml</span>
+
+<span class="t-bracket">[agent]</span>
+<span class="t-key">id</span>      = <span class="t-str">"research-assistant"</span>
+<span class="t-key">version</span> = <span class="t-str">"0.1.0"</span>
+
+<span class="t-bracket">[memory.buffer]</span>
+<span class="t-key">ttl</span>      = <span class="t-str">"5m"</span>
+<span class="t-key">capacity</span> = <span class="t-num">1000</span>
+<span class="t-key">strategy</span> = <span class="t-str">"lru"</span>
+
+<span class="t-bracket">[memory.episode]</span>
+<span class="t-key">half_life</span>   = <span class="t-str">"2h"</span>
+<span class="t-key">max_entries</span> = <span class="t-num">500</span>
+
+<span class="t-bracket">[memory.graph]</span>
+<span class="t-key">persistent</span> = <span class="t-bool">true</span>
+<span class="t-key">storage</span>    = <span class="t-str">"json"</span>
+
+<span class="t-bracket">[memory.core]</span>
+<span class="t-key">immutable</span> = <span class="t-bool">true</span></code></pre>
+          </div>
+        </div>
+
+        <!-- JS API -->
+        <div class="code-block">
+          <div class="config-header">
+            <div class="terminal-dots">
+              <span></span><span></span><span></span>
+            </div>
+            <span class="config-filename">agent.ts</span>
+          </div>
+          <div class="config-body">
+            <pre class="config-code"><code><span class="t-comment">// npm install @MateoKnox/engram</span>
+<span class="t-key">import</span> { EngramEngine } <span class="t-key">from</span> <span class="t-str">'@MateoKnox/engram'</span>;
+
+<span class="t-key">const</span> engine = <span class="t-key">new</span> <span class="t-bracket">EngramEngine</span>(<span class="t-str">'./engram.toml'</span>);
+<span class="t-key">await</span> engine.<span class="t-bracket">init</span>();
+
+<span class="t-comment">// Store a memory in the episode layer</span>
+<span class="t-key">await</span> engine.<span class="t-bracket">store</span>(<span class="t-str">'episode'</span>, <span class="t-str">'User asked about photosynthesis'</span>, {
+  tags: [<span class="t-str">'biology'</span>, <span class="t-str">'user-query'</span>],
+  importance: <span class="t-num">0.8</span>
+});
+
+<span class="t-comment">// Recall across all layers</span>
+<span class="t-key">const</span> memories = <span class="t-key">await</span> engine.<span class="t-bracket">recall</span>(<span class="t-str">'photosynthesis'</span>, {
+  layers: [<span class="t-str">'graph'</span>, <span class="t-str">'episode'</span>, <span class="t-str">'core'</span>],
+  limit: <span class="t-num">5</span>
+});
+
+<span class="t-comment">// Run decay pass</span>
+<span class="t-key">await</span> engine.<span class="t-bracket">decay</span>();
+
+<span class="t-comment">// Consolidate buffer &#8594; episode &#8594; graph</span>
+<span class="t-key">await</span> engine.<span class="t-bracket">consolidate</span>();</code></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta" id="cta">
+    <div class="cta-bg"></div>
+    <div class="container">
+      <div class="cta-content">
+        <div class="cta-badge reveal">
+          <span class="badge-dot"></span>
+          Open Source â€” MIT License
+        </div>
+        <h2 class="cta-title reveal">Get started with ENGRAM</h2>
+        <p class="cta-desc reveal">Install the library, drop in a config file, and give your agent a memory that actually works across sessions.</p>
+        <div class="install-cmd reveal">
+          <span class="install-prompt">$</span>
+          <span class="install-text">npm install @MateoKnox/engram</span>
+        </div>
+        <div class="cta-actions reveal">
+          <a href="https://github.com/MateoKnox/engram" target="_blank" class="btn btn-primary btn-large">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+            View on GitHub
+          </a>
+          <a href="https://github.com/MateoKnox/engram/blob/main/docs/README.md" target="_blank" class="btn btn-outline btn-large">Read the Docs</a>
+        </div>
+        <div class="cta-meta reveal">
+          <span>github.com/MateoKnox/engram</span>
+          <span class="dot-sep">&#183;</span>
+          <span>MIT License</span>
+          <span class="dot-sep">&#183;</span>
+          <span>v0.1.0</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-inner">
+        <div class="footer-left">
+          <a href="#" class="nav-logo">
+            <span class="nav-logo-icon">&#9672;</span>
+            <span class="nav-logo-text">ENGRAM</span>
+          </a>
+          <p class="footer-tagline">The Agent Memory Engine</p>
+          <p class="footer-credit">Built by <a href="https://github.com/MateoKnox" target="_blank">MateoKnox</a></p>
+        </div>
+        <div class="footer-links">
+          <div class="footer-col">
+            <h4>Library</h4>
+            <a href="#layers">Memory Layers</a>
+            <a href="#code">API Docs</a>
+            <a href="https://github.com/MateoKnox/engram" target="_blank">GitHub</a>
+          </div>
+          <div class="footer-col">
+            <h4>Community</h4>
+            <a href="https://github.com/MateoKnox/engram/discussions" target="_blank">Discussions</a>
+            <a href="https://github.com/MateoKnox/engram/issues" target="_blank">Issues</a>
+            <a href="https://github.com/MateoKnox/engram/blob/main/CONTRIBUTING.md" target="_blank">Contribute</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>&#169; 2025 MateoKnox. MIT License. Built for agents that remember.</span>
+        <span>ENGRAM is model agnostic and not affiliated with any AI provider.</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

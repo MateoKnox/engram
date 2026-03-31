@@ -1,0 +1,32 @@
+# engram.toml
+# Example configuration for @MateoKnox/engram
+
+[agent]
+id = "research-assistant"
+version = "0.1.0"
+
+[memory.buffer]
+ttl = "5m"
+capacity = 1000
+strategy = "lru"
+
+[memory.episode]
+half_life = "2h"
+max_entries = 500
+decay = "exponential"
+
+[memory.graph]
+persistent = false
+storage = "memory"
+
+[memory.skill]
+persistent = false
+storage = "memory"
+
+[memory.residue]
+max_summaries = 200
+compression_ratio = 0.3
+
+[memory.core]
+immutable = true
+storage = "memory"
