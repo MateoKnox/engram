@@ -9,7 +9,9 @@
 
 <div align="center">
 
-*Home of the ENGRAM Agent Memory Engine*
+### 🧠 ENGRAM — Agent Memory Engine
+
+*A deterministic, layered memory system for AI agents.*
 
 [![license](https://img.shields.io/badge/license-MIT-blue?style=flat-square)](./LICENSE)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.4%2B-3178c6?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org)
@@ -19,60 +21,230 @@
 
 ---
 
-## What's here
+## ✨ Overview
 
-This is the monorepo for [`@MateoKnox/engram`](https://www.npmjs.com/package/@MateoKnox/engram) — a structured, layered memory engine for AI agents. Six purpose-built memory layers, explicit priority-ordered recall, configurable decay, and zero dependencies.
+`engram` is a **structured memory engine for AI agents**.
 
----
+Instead of dumping everything into a vector database or chat history, ENGRAM organizes memory into **six explicit layers**, each with:
 
-## Packages
+- defined **purpose**
+- controlled **decay**
+- deterministic **recall priority**
 
-| Package | Path | Description |
-|---|---|---|
-| [`@MateoKnox/engram`](https://www.npmjs.com/package/@MateoKnox/engram) | [`packages/engram/`](./packages/engram/) | The Agent Memory Engine — six-layer structured memory for AI agents |
-
----
-
-## Quick links
-
-| | |
-|---|---|
-| [packages/engram/README.md](./packages/engram/README.md) | Full library docs — install, API, layers, config, examples |
-| [packages/engram/docs/QUICKSTART.md](./packages/engram/docs/QUICKSTART.md) | 5-minute getting started guide |
-| [packages/engram/docs/ARCHITECTURE.md](./packages/engram/docs/ARCHITECTURE.md) | System design and data flow |
-| [packages/engram/docs/LAYERS.md](./packages/engram/docs/LAYERS.md) | Deep dive into each of the six layers |
-| [packages/engram/docs/CONFIG.md](./packages/engram/docs/CONFIG.md) | Full `engram.toml` configuration reference |
-| [packages/engram/spec/ENGRAM.md](./packages/engram/spec/ENGRAM.md) | Formal specification |
+This makes agent behavior:
+- predictable
+- debuggable
+- production-safe
 
 ---
 
-## At a glance
+## 🧩 Why ENGRAM?
+
+Most agent memory today is:
+- opaque
+- lossy
+- hard to reason about
+
+ENGRAM fixes that by making memory:
+
+| Property | ENGRAM |
+|--------|--------|
+| Transparent | ✅ Fully inspectable layers |
+| Deterministic | ✅ Priority-based recall |
+| Controllable | ✅ Configurable decay + persistence |
+| Lightweight | ✅ Zero dependencies |
+| Production-ready | ✅ Designed for real systems |
+
+---
+
+## 🧠 Memory Architecture
 
 ```
-  CORE  >  RESIDUE  >  SKILL  >  GRAPH  >  EPISODE  >  BUFFER
-  ────────────────────────────────────────────────────────────
-  immutable   compressed   procedural   semantic   timestamped   transient
-  identity    traces       behaviors    facts      event log     context
+CORE  >  RESIDUE  >  SKILL  >  GRAPH  >  EPISODE  >  BUFFER
+────────────────────────────────────────────────────────────
+identity   traces    behaviors   facts    event log   context
+immutable  compressed procedural semantic timestamped transient
 ```
 
-Six layers. Each with distinct persistence, decay, and recall priority. Together they give your agent a memory system that's transparent, auditable, and behaves predictably in production.
+Each layer serves a **specific cognitive role**:
+
+### 1. CORE — Identity
+- Immutable truths about the agent
+- System-level constraints
+- Personality / role definitions
+
+### 2. RESIDUE — Compressed Experience
+- Distilled patterns from past interactions
+- High-signal, low-noise memory
+
+### 3. SKILL — Procedural Memory
+- Learned behaviors and strategies
+- Task execution logic
+
+### 4. GRAPH — Semantic Knowledge
+- Facts and relationships
+- Structured understanding of the world
+
+### 5. EPISODE — Event Log
+- Timestamped interactions
+- Historical trace of activity
+
+### 6. BUFFER — Working Context
+- Short-term memory
+- Immediate conversational context
 
 ---
 
-## Install
+## ⚡ Key Features
+
+- **Layered memory model** — no more “everything is context”
+- **Priority-based recall** — CORE > BUFFER always
+- **Configurable decay** — memory fades predictably
+- **Zero dependencies** — minimal, portable
+- **Deterministic behavior** — reproducible outputs
+- **Auditable state** — inspect exactly what the agent “knows”
+
+---
+
+## 🚀 Installation
 
 ```bash
 npm install @MateoKnox/engram
 ```
 
-Requires Node.js >= 18. No other dependencies.
-
-See the [full README](./packages/engram/README.md) for the complete API reference, layer documentation, configuration guide, and integration examples.
+Requirements:
+- Node.js >= 18
 
 ---
 
-## License
+## ⚡ Quick Start
+
+```ts
+import { Engram } from "@MateoKnox/engram";
+
+const memory = new Engram();
+
+// Add memory
+memory.remember({
+  layer: "EPISODE",
+  content: "User prefers concise responses",
+});
+
+// Recall memory
+const context = memory.recall();
+console.log(context);
+```
+
+---
+
+## 🔧 Configuration
+
+ENGRAM is fully configurable via `engram.toml`:
+
+```toml
+[decay]
+buffer = 0.9
+episode = 0.7
+graph = 0.5
+
+[priority]
+core = 100
+residue = 80
+skill = 60
+graph = 40
+episode = 20
+buffer = 10
+```
+
+You control:
+- memory lifespan
+- recall ordering
+- compression behavior
+
+---
+
+## 🧠 Mental Model
+
+Think of ENGRAM like a brain:
+
+| Layer | Analogy |
+|------|--------|
+| CORE | Personality / identity |
+| RESIDUE | Intuition |
+| SKILL | Muscle memory |
+| GRAPH | Knowledge |
+| EPISODE | Memories |
+| BUFFER | Thoughts |
+
+---
+
+## 📦 Packages
+
+| Package | Description |
+|---|---|
+| `@MateoKnox/engram` | Core memory engine |
+
+---
+
+## 📚 Documentation
+
+- [📘 Full Docs](./packages/engram/README.md)
+- [⚡ Quickstart](./packages/engram/docs/QUICKSTART.md)
+- [🏗 Architecture](./packages/engram/docs/ARCHITECTURE.md)
+- [🧠 Layers Deep Dive](./packages/engram/docs/LAYERS.md)
+- [⚙️ Config Reference](./packages/engram/docs/CONFIG.md)
+- [📐 Specification](./packages/engram/spec/ENGRAM.md)
+
+---
+
+## 🛠 Use Cases
+
+ENGRAM is designed for:
+
+- Autonomous agents
+- Chatbots with long-term memory
+- AI copilots
+- Simulation agents
+- On-chain / decentralized agents
+- Multi-agent systems
+
+---
+
+## 🔮 Philosophy
+
+> Memory should not be magic.  
+> It should be structured, inspectable, and predictable.
+
+ENGRAM treats memory as a **first-class system**, not an afterthought.
+
+---
+
+## 🤝 Contributing
+
+PRs, ideas, and experiments are welcome.
+
+```bash
+git clone https://github.com/MateoKnox/engram
+cd engram
+npm install
+```
+
+---
+
+## 📄 License
 
 MIT — Copyright © 2026 MateoKnox
 
-[github.com/MateoKnox/engram](https://github.com/MateoKnox/engram)
+---
+
+## ⭐ Repo
+
+https://github.com/MateoKnox/engram
+
+---
+
+<div align="center">
+
+**ENGRAM → Memory that behaves like a system, not a black box.**
+
+</div>
