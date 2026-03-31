@@ -14,6 +14,8 @@
 
 *A deterministic, layered memory system for AI agents.*
 
+Website: https://engrambrain.tech/
+
 [![license](https://img.shields.io/badge/license-MIT-blue?style=flat-square)](./LICENSE)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.4%2B-3178c6?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org)
 [![node](https://img.shields.io/node/v/@MateoKnox/engram.svg?style=flat-square)](https://nodejs.org)
