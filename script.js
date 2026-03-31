@@ -25,10 +25,13 @@ window.addEventListener('scroll', () => {
   const ctx = canvas.getContext('2d');
 
   let W, H, particles = [], animFrame;
+  let mouse = { x: -9999, y: -9999, active: false };
 
-  const PARTICLE_COUNT = 80;
+  const PARTICLE_COUNT = 100;
   const ACCENT = '0,212,255';
   const PURPLE = '123,47,255';
+  const MOUSE_RADIUS = 180;
+  const MOUSE_FORCE = 0.08;
 
   function resize() {
     W = canvas.width = canvas.offsetWidth;
@@ -39,13 +42,31 @@ window.addEventListener('scroll', () => {
     return {
       x: Math.random() * W,
       y: Math.random() * H,
+      baseVx: (Math.random() - 0.5) * 0.35,
+      baseVy: (Math.random() - 0.5) * 0.35,
       vx: (Math.random() - 0.5) * 0.35,
       vy: (Math.random() - 0.5) * 0.35,
       r: Math.random() * 1.8 + 0.4,
+      baseR: 0,
       opacity: Math.random() * 0.4 + 0.1,
+      baseOpacity: 0,
       color: Math.random() > 0.7 ? PURPLE : ACCENT,
     };
   }
+
+  // Track mouse relative to canvas
+  canvas.addEventListener('mousemove', (e) => {
+    const rect = canvas.getBoundingClientRect();
+    mouse.x = e.clientX - rect.left;
+    mouse.y = e.clientY - rect.top;
+    mouse.active = true;
+  }, { passive: true });
+
+  canvas.addEventListener('mouseleave', () => {
+    mouse.active = false;
+    mouse.x = -9999;
+    mouse.y = -9999;
+  }, { passive: true });
 
   function drawGrid() {
     const spacing = 60;
@@ -61,11 +82,29 @@ window.addEventListener('scroll', () => {
       ctx.lineTo(W, y);
     }
     ctx.stroke();
+
+    // Draw glowing grid distortion near cursor
+    if (mouse.active) {
+      for (let x = 0; x < W; x += spacing) {
+        for (let y = 0; y < H; y += spacing) {
+          const dx = x - mouse.x;
+          const dy = y - mouse.y;
+          const d = Math.sqrt(dx * dx + dy * dy);
+          if (d < MOUSE_RADIUS) {
+            const alpha = (1 - d / MOUSE_RADIUS) * 0.15;
+            ctx.fillStyle = `rgba(${ACCENT},${alpha})`;
+            ctx.fillRect(x - 1, y - 1, 2, 2);
+          }
+        }
+      }
+    }
   }
 
   function drawConnections() {
     const maxDist = 120;
+    // Also draw connections from particles to mouse
     for (let i = 0; i < particles.length; i++) {
+      // Particle-to-particle
       for (let j = i + 1; j < particles.length; j++) {
         const dx = particles[i].x - particles[j].x;
         const dy = particles[i].y - particles[j].y;
@@ -80,18 +119,90 @@ window.addEventListener('scroll', () => {
           ctx.stroke();
         }
       }
+      // Particle-to-mouse connections
+      if (mouse.active) {
+        const dx = particles[i].x - mouse.x;
+        const dy = particles[i].y - mouse.y;
+        const d = Math.sqrt(dx * dx + dy * dy);
+        if (d < MOUSE_RADIUS) {
+          const alpha = (1 - d / MOUSE_RADIUS) * 0.25;
+          ctx.strokeStyle = `rgba(${ACCENT},${alpha})`;
+          ctx.lineWidth = 0.8;
+          ctx.beginPath();
+          ctx.moveTo(particles[i].x, particles[i].y);
+          ctx.lineTo(mouse.x, mouse.y);
+          ctx.stroke();
+        }
+      }
     }
+  }
+
+  function drawMouseGlow() {
+    if (!mouse.active) return;
+    const gradient = ctx.createRadialGradient(mouse.x, mouse.y, 0, mouse.x, mouse.y, MOUSE_RADIUS);
+    gradient.addColorStop(0, 'rgba(0,212,255,0.06)');
+    gradient.addColorStop(0.5, 'rgba(0,212,255,0.02)');
+    gradient.addColorStop(1, 'rgba(0,212,255,0)');
+    ctx.fillStyle = gradient;
+    ctx.beginPath();
+    ctx.arc(mouse.x, mouse.y, MOUSE_RADIUS, 0, Math.PI * 2);
+    ctx.fill();
   }
 
   function draw() {
     ctx.clearRect(0, 0, W, H);
     drawGrid();
+    drawMouseGlow();
     drawConnections();
     particles.forEach(p => {
+      // Initialize base values on first frame
+      if (!p.baseR) { p.baseR = p.r; p.baseOpacity = p.opacity; }
+
+      // Mouse interaction — push particles away + brighten near cursor
+      if (mouse.active) {
+        const dx = p.x - mouse.x;
+        const dy = p.y - mouse.y;
+        const d = Math.sqrt(dx * dx + dy * dy);
+        if (d < MOUSE_RADIUS && d > 0) {
+          const force = (1 - d / MOUSE_RADIUS) * MOUSE_FORCE;
+          p.vx += (dx / d) * force;
+          p.vy += (dy / d) * force;
+          // Brighten and enlarge particles near cursor
+          const proximity = 1 - d / MOUSE_RADIUS;
+          p.opacity = p.baseOpacity + proximity * 0.5;
+          p.r = p.baseR + proximity * 2;
+        } else {
+          p.opacity += (p.baseOpacity - p.opacity) * 0.05;
+          p.r += (p.baseR - p.r) * 0.05;
+        }
+      } else {
+        p.opacity += (p.baseOpacity - p.opacity) * 0.05;
+        p.r += (p.baseR - p.r) * 0.05;
+      }
+
+      // Dampen velocity back toward base drift
+      p.vx += (p.baseVx - p.vx) * 0.02;
+      p.vy += (p.baseVy - p.vy) * 0.02;
+
       ctx.beginPath();
       ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
       ctx.fillStyle = `rgba(${p.color},${p.opacity})`;
       ctx.fill();
+
+      // Add glow to particles near mouse
+      if (mouse.active) {
+        const dx = p.x - mouse.x;
+        const dy = p.y - mouse.y;
+        const d = Math.sqrt(dx * dx + dy * dy);
+        if (d < MOUSE_RADIUS * 0.6) {
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.r * 3, 0, Math.PI * 2);
+          const glowAlpha = (1 - d / (MOUSE_RADIUS * 0.6)) * 0.15;
+          ctx.fillStyle = `rgba(${p.color},${glowAlpha})`;
+          ctx.fill();
+        }
+      }
+
       p.x += p.vx;
       p.y += p.vy;
       if (p.x < 0) p.x = W;
