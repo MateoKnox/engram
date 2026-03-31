@@ -1,26 +1,17 @@
-```
-███████╗███╗   ██╗ ██████╗ ██████╗  █████╗ ███╗   ███╗
-██╔════╝████╗  ██║██╔════╝ ██╔══██╗██╔══██╗████╗ ████║
-█████╗  ██╔██╗ ██║██║  ███╗██████╔╝███████║██╔████╔██║
-██╔══╝  ██║╚██╗██║██║   ██║██╔══██╗██╔══██║██║╚██╔╝██║
-███████╗██║ ╚████║╚██████╔╝██║  ██║██║  ██║██║ ╚═╝ ██║
-╚══════╝╚═╝  ╚═══╝ ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝     ╚═╝
-```
-
 <div align="center">
+
+# ENGRAM
 
 **The Agent Memory Engine**
 
-*Six layers. Explicit semantics. Zero dependencies.*
+A TOML-based structured memory system for AI agents.
+Six layers. Explicit decay. Zero amnesia. Model agnostic.
 
-[![npm version](https://img.shields.io/npm/v/@MateoKnox/engram.svg?style=flat-square&color=cb3837)](https://www.npmjs.com/package/@MateoKnox/engram)
-[![license](https://img.shields.io/npm/l/@MateoKnox/engram.svg?style=flat-square&color=blue)](./LICENSE)
-[![node](https://img.shields.io/node/v/@MateoKnox/engram.svg?style=flat-square&color=brightgreen)](https://nodejs.org)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.4%2B-3178c6?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org)
-[![tests](https://img.shields.io/badge/tests-passing-brightgreen?style=flat-square)](./tests)
-[![zero deps](https://img.shields.io/badge/dependencies-0-brightgreen?style=flat-square)](./package.json)
+[![npm version](https://img.shields.io/badge/version-v0.1.0-blue)](https://www.npmjs.com/package/@MateoKnox/engram)
+[![license](https://img.shields.io/badge/license-MIT-green)](LICENSE)
+[![PRs welcome](https://img.shields.io/badge/PRs-welcome-brightgreen)](CONTRIBUTING.md)
 
-[**Docs**](./docs/QUICKSTART.md) · [**Architecture**](./docs/ARCHITECTURE.md) · [**Layer Reference**](./docs/LAYERS.md) · [**Config**](./docs/CONFIG.md) · [**Spec**](./spec/ENGRAM.md) · [**GitHub**](https://github.com/MateoKnox/engram)
+[Spec](spec/ENGRAM.md) · [Quickstart](docs/QUICKSTART.md) · [Examples](examples/) · [GitHub](https://github.com/MateoKnox/engram)
 
 </div>
 
@@ -88,87 +79,24 @@ When `recall()` fires, results come back sorted by layer priority — CORE first
 
 ---
 
-## Layer Architecture
+## Architecture
 
 ```
-  ╔══════════════════════════════════════════════════════════════════╗
-  ║                        RECALL PRIORITY                          ║
-  ║         CORE  >  RESIDUE  >  SKILL  >  GRAPH  >  EPISODE  >  BUFFER          ║
-  ╚══════════════════════════════════════════════════════════════════╝
+┌─────────────────────────────────────┐
+│              CORE                   │  immutable identity & constraints
+├─────────────────────────────────────┤
+│            RESIDUE                  │  compressed traces of faded memories
+├─────────────────────────────────────┤
+│             SKILL                   │  procedures & trigger patterns
+├─────────────────────────────────────┤
+│             GRAPH                   │  semantic facts & knowledge
+├─────────────────────────────────────┤
+│            EPISODE                  │  timestamped events with decay
+├─────────────────────────────────────┤
+│            BUFFER                   │  transient working memory
+└─────────────────────────────────────┘
 
-  ┌────────────────────────────────────────────────────────────────┐
-  │  ██████╗  ██████╗ ██████╗ ███████╗                            │
-  │  ██╔════╝██╔═══██╗██╔══██╗██╔════╝   CORE                     │
-  │  ██║     ██║   ██║██████╔╝█████╗     ─────────────────────    │
-  │  ██║     ██║   ██║██╔══██╗██╔══╝     Weight:  always 1.0      │
-  │  ╚██████╗╚██████╔╝██║  ██║███████╗   Decay:   none            │
-  │   ╚═════╝ ╚═════╝ ╚═╝  ╚═╝╚══════╝   Write:   once            │
-  │                                                                │
-  │  Immutable identity layer. Agent name, purpose, hard           │
-  │  constraints. Cannot be overwritten by runtime input.          │
-  └────────────────────────────────────────────────────────────────┘
-                              ↑ highest priority
-
-  ┌────────────────────────────────────────────────────────────────┐
-  │  ██████╗ ███████╗███████╗██╗██████╗ ██╗   ██╗███████╗         │
-  │  ██╔══██╗██╔════╝██╔════╝██║██╔══██╗██║   ██║██╔════╝  RESIDUE│
-  │  ██████╔╝█████╗  ███████╗██║██║  ██║██║   ██║█████╗    ───────│
-  │  ██╔══██╗██╔══╝  ╚════██║██║██║  ██║██║   ██║██╔══╝    Auto   │
-  │  ██║  ██║███████╗███████║██║██████╔╝╚██████╔╝███████╗  managed│
-  │  ╚═╝  ╚═╝╚══════╝╚══════╝╚═╝╚═════╝  ╚═════╝ ╚══════╝         │
-  │                                                                │
-  │  Compressed traces of faded episodes. Auto-created by          │
-  │  consolidate(). Read-only. Lossy but searchable.               │
-  └────────────────────────────────────────────────────────────────┘
-
-  ┌────────────────────────────────────────────────────────────────┐
-  │  ███████╗██╗  ██╗██╗██╗     ██╗                               │
-  │  ██╔════╝██║ ██╔╝██║██║     ██║           SKILL               │
-  │  ███████╗█████╔╝ ██║██║     ██║           ──────────────────  │
-  │  ╚════██║██╔═██╗ ██║██║     ██║           Weight: stable      │
-  │  ███████║██║  ██╗██║███████╗███████╗      Decay:  none        │
-  │  ╚══════╝╚═╝  ╚═╝╚═╝╚══════╝╚══════╝      Trigger: regex      │
-  │                                                                │
-  │  Procedural memory. How the agent behaves. Can define          │
-  │  trigger patterns that auto-surface skills on matching input.  │
-  └────────────────────────────────────────────────────────────────┘
-
-  ┌────────────────────────────────────────────────────────────────┐
-  │   ██████╗ ██████╗  █████╗ ██████╗ ██╗  ██╗                    │
-  │  ██╔════╝ ██╔══██╗██╔══██╗██╔══██╗██║  ██║   GRAPH            │
-  │  ██║  ███╗██████╔╝███████║██████╔╝███████║   ───────────────  │
-  │  ██║   ██║██╔══██╗██╔══██║██╔═══╝ ██╔══██║   Weight: fixed    │
-  │  ╚██████╔╝██║  ██║██║  ██║██║     ██║  ██║   Decay:  none     │
-  │   ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝     ╚═╝  ╚═╝   Key:   optional │
-  │                                                                │
-  │  Semantic fact store. Domain knowledge, user preferences,      │
-  │  API data, ground truth. Key-value with optional persistence.  │
-  └────────────────────────────────────────────────────────────────┘
-
-  ┌────────────────────────────────────────────────────────────────┐
-  │  ███████╗██████╗ ██╗███████╗ ██████╗ ██████╗ ███████╗         │
-  │  ██╔════╝██╔══██╗██║██╔════╝██╔═══██╗██╔══██╗██╔════╝ EPISODE │
-  │  █████╗  ██████╔╝██║███████╗██║   ██║██║  ██║█████╗   ─────── │
-  │  ██╔══╝  ██╔═══╝ ██║╚════██║██║   ██║██║  ██║██╔══╝   Decays  │
-  │  ███████╗██║     ██║███████║╚██████╔╝██████╔╝███████╗ w/time  │
-  │  ╚══════╝╚═╝     ╚═╝╚══════╝ ╚═════╝ ╚═════╝ ╚══════╝         │
-  │                                                                │
-  │  Autobiographical event log. Every message, every action,      │
-  │  every observation. Half-life decay. Fades into residue.       │
-  └────────────────────────────────────────────────────────────────┘
-
-  ┌────────────────────────────────────────────────────────────────┐
-  │  ██████╗ ██╗   ██╗███████╗███████╗███████╗██████╗             │
-  │  ██╔══██╗██║   ██║██╔════╝██╔════╝██╔════╝██╔══██╗  BUFFER    │
-  │  ██████╔╝██║   ██║█████╗  █████╗  █████╗  ██████╔╝  ───────── │
-  │  ██╔══██╗██║   ██║██╔══╝  ██╔══╝  ██╔══╝  ██╔══██╗  TTL expiry│
-  │  ██████╔╝╚██████╔╝██║     ██║     ███████╗██║  ██║  LRU/FIFO  │
-  │  ╚═════╝  ╚═════╝ ╚═╝     ╚═╝     ╚══════╝╚═╝  ╚═╝  No persist│
-  │                                                                │
-  │  Transient working memory. Current turn context, tool call     │
-  │  results, active intent. Evicted by TTL, never persisted.      │
-  └────────────────────────────────────────────────────────────────┘
-                              ↓ lowest priority
+Resolution: core > residue > skill > graph > episode > buffer
 ```
 
 ---
