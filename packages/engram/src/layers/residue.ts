@@ -37,9 +37,9 @@ export class ResidueLayer {
       sourceIds: entries.map(e => e.id),
     };
 
-    this.store.push(entry);
-    if (this.store.length > this.config.max_summaries) {
-      this.store.shift();
+    this._entries.push(entry);
+    if (this._entries.length > this.config.max_summaries) {
+      this._entries.shift();
     }
     return entry;
   }
@@ -52,17 +52,17 @@ export class ResidueLayer {
       .join(' | ');
   }
 
-  getAll(): ResidueEntry[] { return [...this.store]; }
+  getAll(): ResidueEntry[] { return [...this._entries]; }
 
   search(query: string): ResidueEntry[] {
     const q = query.toLowerCase();
-    return this.store.filter(e =>
+    return this._entries.filter(e =>
       e.summary.toLowerCase().includes(q) ||
       e.content.toLowerCase().includes(q) ||
       e.tags.some(t => t.toLowerCase().includes(q))
     );
   }
 
-  size(): number { return this.store.length; }
-  clear(): void { this.store = []; }
+  size(): number { return this._entries.length; }
+  clear(): void { this._entries = []; }
 }

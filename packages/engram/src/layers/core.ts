@@ -26,15 +26,15 @@ export class CoreLayer {
       tags: options.tags ?? [],
       immutable: true,
     };
-    this.store.push(entry);
+    this._entries.push(entry);
     return entry;
   }
 
-  getAll(): CoreEntry[] { return [...this.store]; }
+  getAll(): CoreEntry[] { return [...this._entries]; }
 
   search(query: string): CoreEntry[] {
     const q = query.toLowerCase();
-    return this.store.filter(e =>
+    return this._entries.filter(e =>
       e.content.toLowerCase().includes(q) ||
       e.tags.some(t => t.toLowerCase().includes(q))
     );
@@ -43,7 +43,7 @@ export class CoreLayer {
   /** Core entries cannot be deleted (immutable) — this is a no-op */
   delete(_id: string): false { return false; }
 
-  size(): number { return this.store.length; }
+  size(): number { return this._entries.length; }
 
   /** Core is never cleared — provides persistent read-only access */
   clear(): void { /* intentionally no-op */ }

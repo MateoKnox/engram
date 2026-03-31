@@ -37,15 +37,15 @@ export class BufferLayer {
     };
 
     // Enforce capacity
-    if (this.store.size >= this.config.capacity) {
+    if (this._map.size >= this.config.capacity) {
       this.evict();
     }
 
-    this.store.set(id, entry);
+    this._map.set(id, entry);
 
     // Auto-expire
     const timer = setTimeout(() => {
-      this.store.delete(id);
+      this._map.delete(id);
       this.timers.delete(id);
     }, ttlMs);
     if (timer.unref) timer.unref(); // don't block process exit
@@ -56,12 +56,12 @@ export class BufferLayer {
 
   private evict(): void {
     if (this.config.strategy === 'fifo') {
-      const firstKey = this.store.keys().next().value;
+      const firstKey = this._map.keys().next().value;
       if (firstKey) this.delete(firstKey);
     } else {
       // LRU: delete oldest by createdAt
       let oldest: BufferEntry | undefined;
-      for (const entry of this.store.values()) {
+      for (const entry of this._map.values()) {
         if (!oldest || entry.createdAt < oldest.createdAt) oldest = entry;
       }
       if (oldest) this.delete(oldest.id);
@@ -69,13 +69,13 @@ export class BufferLayer {
   }
 
   private delete(id: string): void {
-    this.store.delete(id);
+    this._map.delete(id);
     const timer = this.timers.get(id);
     if (timer) { clearTimeout(timer); this.timers.delete(id); }
   }
 
   get(id: string): BufferEntry | undefined {
-    const entry = this.store.get(id);
+    const entry = this._map.get(id);
     if (!entry) return undefined;
     if (Date.now() > entry.expiresAt) { this.delete(id); return undefined; }
     return entry;
@@ -84,7 +84,7 @@ export class BufferLayer {
   getAll(): BufferEntry[] {
     const now = Date.now();
     const valid: BufferEntry[] = [];
-    for (const entry of this.store.values()) {
+    for (const entry of this._map.values()) {
       if (now > entry.expiresAt) { this.delete(entry.id); }
       else { valid.push(entry); }
     }
@@ -108,16 +108,16 @@ export class BufferLayer {
   decay(): { expired: number; remaining: number } {
     const now = Date.now();
     let expired = 0;
-    for (const entry of [...this.store.values()]) {
+    for (const entry of [...this._map.values()]) {
       if (now > entry.expiresAt) { this.delete(entry.id); expired++; }
     }
-    return { expired, remaining: this.store.size };
+    return { expired, remaining: this._map.size };
   }
 
-  size(): number { return this.store.size; }
+  size(): number { return this._map.size; }
 
   clear(): void {
     for (const id of [...this.timers.keys()]) this.delete(id);
-    this.store.clear();
+    this._map.clear();
   }
 }

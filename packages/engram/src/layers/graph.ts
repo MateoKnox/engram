@@ -17,7 +17,7 @@ export class GraphLayer {
   store(content: string, options: StoreOptions = {}): GraphEntry {
     const now = Date.now();
     const key = options.key ?? content.slice(0, 64).toLowerCase().replace(/\s+/g, '-');
-    const existing = this.store.get(key);
+    const existing = this._map.get(key);
 
     if (existing) {
       // Update existing node
@@ -42,18 +42,18 @@ export class GraphLayer {
       persistent: this.config.persistent,
     };
 
-    this.store.set(key, entry);
+    this._map.set(key, entry);
     this.byId.set(entry.id, entry);
     return entry;
   }
 
-  get(key: string): GraphEntry | undefined { return this.store.get(key); }
+  get(key: string): GraphEntry | undefined { return this._map.get(key); }
   getById(id: string): GraphEntry | undefined { return this.byId.get(id); }
-  getAll(): GraphEntry[] { return [...this.store.values()]; }
+  getAll(): GraphEntry[] { return [...this._map.values()]; }
 
   search(query: string): GraphEntry[] {
     const q = query.toLowerCase();
-    return [...this.store.values()]
+    return [...this._map.values()]
       .filter(e =>
         e.key.includes(q) ||
         e.content.toLowerCase().includes(q) ||
@@ -63,13 +63,13 @@ export class GraphLayer {
   }
 
   delete(key: string): boolean {
-    const entry = this.store.get(key);
+    const entry = this._map.get(key);
     if (!entry) return false;
-    this.store.delete(key);
+    this._map.delete(key);
     this.byId.delete(entry.id);
     return true;
   }
 
-  size(): number { return this.store.size; }
-  clear(): void { this.store.clear(); this.byId.clear(); }
+  size(): number { return this._map.size; }
+  clear(): void { this._map.clear(); this.byId.clear(); }
 }

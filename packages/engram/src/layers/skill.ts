@@ -28,15 +28,15 @@ export class SkillLayer {
       procedure: options.procedure ?? content,
       triggerPattern: options.triggerPattern,
     };
-    this.store.set(id, entry);
+    this._map.set(id, entry);
     return entry;
   }
 
-  getAll(): SkillEntry[] { return [...this.store.values()]; }
+  getAll(): SkillEntry[] { return [...this._map.values()]; }
 
   search(query: string): SkillEntry[] {
     const q = query.toLowerCase();
-    return [...this.store.values()].filter(e =>
+    return [...this._map.values()].filter(e =>
       e.content.toLowerCase().includes(q) ||
       e.procedure.toLowerCase().includes(q) ||
       (e.triggerPattern && e.triggerPattern.toLowerCase().includes(q)) ||
@@ -45,7 +45,7 @@ export class SkillLayer {
   }
 
   matchTrigger(input: string): SkillEntry[] {
-    return [...this.store.values()].filter(e => {
+    return [...this._map.values()].filter(e => {
       if (!e.triggerPattern) return false;
       try {
         const re = new RegExp(e.triggerPattern, 'i');
@@ -54,6 +54,6 @@ export class SkillLayer {
     });
   }
 
-  size(): number { return this.store.size; }
-  clear(): void { this.store.clear(); }
+  size(): number { return this._map.size; }
+  clear(): void { this._map.clear(); }
 }

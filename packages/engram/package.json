@@ -1,5 +1,5 @@
 {
-  "name": "@MateoKnox/engram",
+  "name": "@mateoknox/engram",
   "version": "0.1.0",
   "description": "The Agent Memory Engine — structured, layered, decaying memory for AI agents",
   "type": "module",
